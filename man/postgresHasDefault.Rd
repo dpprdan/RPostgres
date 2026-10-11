@@ -10,16 +10,14 @@ postgresHasDefault(...)
 postgresDefault(...)
 }
 \arguments{
-\item{...}{Additional arguments passed on to \code{\link[=dbConnect]{dbConnect()}}}
+\item{...}{Additional arguments passed on to \code{\link[DBI:dbConnect]{dbConnect()}}}
 }
 \description{
-RPostgres examples and tests connect to a default database via
-\verb{dbConnect(}\code{\link[=Postgres]{Postgres()}}\verb{)}. This function checks if that
-database is available, and if not, displays an informative message.
+RPostgres examples and tests connect to a default database via \verb{dbConnect(}\code{\link[=Postgres]{Postgres()}}\verb{)}.
+This function checks if that database is available, and if not, displays an informative message.
 
-\code{postgresDefault()} works similarly but returns a connection on success and
-throws a testthat skip condition on failure, making it suitable for use in
-tests.
+\code{postgresDefault()} works similarly but returns a connection on success and throws a testthat skip condition on failure,
+making it suitable for use in tests.
 }
 \examples{
 if (postgresHasDefault()) {

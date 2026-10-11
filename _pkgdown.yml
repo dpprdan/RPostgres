@@ -2,6 +2,7 @@ url: https://rpostgres.r-dbi.org
 
 template:
   package: dbitemplate
+  bootstrap: 5
 
 home:
   links:
@@ -40,6 +41,8 @@ reference:
   - '`RPostgres-package`'
   - postgresHasDefault
   - postgresWaitForNotify
+  - postgresImportLargeObject
+  - postgresExportLargeObject
 
 development:
   mode: auto

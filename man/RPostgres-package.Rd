@@ -4,9 +4,9 @@
 \name{RPostgres-package}
 \alias{RPostgres}
 \alias{RPostgres-package}
-\title{RPostgres: Rcpp Interface to PostgreSQL}
+\title{RPostgres: C++ Interface to PostgreSQL}
 \description{
-Fully DBI-compliant Rcpp-backed interface to PostgreSQL \url{https://www.postgresql.org/}, an open-source relational database.
+Fully DBI-compliant C++-backed interface to PostgreSQL \url{https://www.postgresql.org/}, an open-source relational database.
 }
 \seealso{
 Useful links:
@@ -22,6 +22,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Kirill Müller \email{kirill@cynkra.com} (\href{https://orcid.org/0000-0002-1416-3412}{ORCID})
   \item Hadley Wickham
   \item Jeroen Ooms
 }

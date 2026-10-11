@@ -1,7 +1,7 @@
 Package: RPostgres
 Title: C++ Interface to PostgreSQL
-Version: 1.4.6.9006
-Date: 2024-04-02
+Version: 1.4.10.9020
+Date: 2026-10-11
 Authors@R: c(
     person("Hadley", "Wickham", role = "aut"),
     person("Jeroen", "Ooms", role = "aut"),
@@ -36,8 +36,7 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0)
 LinkingTo: 
-    cpp11,
-    plogr (>= 0.2.0)
+    cpp11
 Config/Needs/website: 
     r-dbi/dbitemplate
 VignetteBuilder: 
@@ -46,10 +45,15 @@ Config/Needs/build: decor
 Config/autostyle/scope: line_breaks
 Config/autostyle/strict: false
 Config/testthat/edition: 3
+Config/gha/filter: os != "windows-11-arm"
+Config/comment/gha/filter: No PostgreSQL server exists for ARM64 Windows, and
+    the DBItest suite needs a live one -- it connects in
+    tests/testthat/helper-DBItest.R and has no path that skips when the server
+    is absent. ankane/setup-postgres gives up on that runner in about a second.
+    Drop this filter once PostgreSQL publishes an ARM64 Windows server.
 Encoding: UTF-8
 LazyLoad: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
 SystemRequirements: libpq >= 9.0: libpq-dev (deb) or postgresql-devel
     (rpm)
 Collate: 
@@ -107,3 +111,4 @@ Collate:
     'tables.R'
     'transactions.R'
     'utils.R'
+Config/roxygen2/version: 8.1.1.9000

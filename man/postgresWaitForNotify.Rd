@@ -7,10 +7,10 @@
 postgresWaitForNotify(conn, timeout = 1)
 }
 \arguments{
-\item{conn}{a \linkS4class{PqConnection} object, produced by
-\code{\link[DBI:dbConnect]{DBI::dbConnect()}}}
+\item{conn}{a \link[=PqConnection-class]{PqConnection} object, produced by \code{\link[DBI:dbConnect]{DBI::dbConnect()}}}
 
-\item{timeout}{How long to wait, in seconds. Default 1}
+\item{timeout}{How long to wait, in seconds.
+Default 1}
 }
 \value{
 If a notification was available, a list of:
@@ -22,11 +22,10 @@ If a notification was available, a list of:
 If no notifications are available, return NULL
 }
 \description{
-Once you subscribe to notifications with LISTEN, use this to wait for
-responses on each channel.
+Once you subscribe to notifications with LISTEN, use this to wait for responses on each channel.
 }
 \examples{
-\dontshow{if (postgresHasDefault()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (postgresHasDefault()) withAutoprint(\{ # examplesIf}
 library(DBI)
 library(callr)
 

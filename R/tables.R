@@ -1,10 +1,8 @@
 #' Convenience functions for reading/writing DBMS tables
 #'
-#' @description [dbWriteTable()] executes several SQL statements that
-#' create/overwrite a table and fill it with values.
-#' \pkg{RPostgres} does not use parameterised queries to insert rows because
-#' benchmarks revealed that this was considerably slower than using a single
-#' SQL string.
+#' @description [dbWriteTable()] executes several SQL statements that create/overwrite a table and fill it with values.
+#' \pkg{RPostgres} does not use parameterised queries to insert rows
+#' because benchmarks revealed that this was considerably slower than using a single SQL string.
 #'
 #' @section Schemas, catalogs, tablespaces:
 #' Pass an identifier created with [Id()] as the `name` argument
@@ -14,29 +12,25 @@
 #' `dbExecute(conn, "SET default_tablespace TO my_tablespace")`
 #' before creating the table.
 #'
-#' @param conn a [PqConnection-class] object, produced by
-#'   [DBI::dbConnect()]
-#' @param name a character string specifying a table name. Names will be
-#'   automatically quoted so you can use any sequence of characters, not
-#'   just any valid bare table name.
+#' @param conn a [PqConnection-class] object, produced by [DBI::dbConnect()]
+#' @param name a character string specifying a table name.
+#'   Names will be automatically quoted so you can use any sequence of characters, not just any valid bare table name.
 #'   Alternatively, pass a name quoted with [dbQuoteIdentifier()],
 #'   an [Id()] object, or a string escaped with [SQL()].
 #' @param value A data.frame to write to the database.
 #' @inheritParams DBI::sqlCreateTable
-#' @param overwrite a logical specifying whether to overwrite an existing table
-#'   or not. Its default is `FALSE`.
-#' @param append a logical specifying whether to append to an existing table
-#'   in the DBMS. Its default is `FALSE`.
-#' @param field.types character vector of named SQL field types where
-#'   the names are the names of new table's columns.
+#' @param overwrite a logical specifying whether to overwrite an existing table or not.
+#'   Its default is `FALSE`.
+#' @param append a logical specifying whether to append to an existing table in the DBMS.
+#'   Its default is `FALSE`.
+#' @param field.types character vector of named SQL field types where the names are the names of new table's columns.
 #'   If missing, types are inferred with [DBI::dbDataType()]).
 #'   The types can only be specified with `append = FALSE`.
-#' @param copy If `TRUE`, serializes the data frame to a single string
-#'   and uses `COPY name FROM stdin`. This is fast, but not supported by
-#'   all postgres servers (e.g. Amazon's Redshift). If `FALSE`, generates
-#'   a single SQL string. This is slower, but always supported.
-#'   The default maps to `TRUE` on connections established via [Postgres()]
-#'   and to `FALSE` on connections established via [Redshift()].
+#' @param copy If `TRUE`, serializes the data frame to a single string and uses `COPY name FROM stdin`.
+#'   This is fast, but not supported by all postgres servers (e.g. Amazon's Redshift).
+#'   If `FALSE`, generates a single SQL string.
+#'   This is slower, but always supported.
+#'   The default maps to `TRUE` on connections established via [Postgres()] and to `FALSE` on connections established via [Redshift()].
 #'
 #' @examplesIf postgresHasDefault()
 #' library(DBI)
@@ -65,15 +59,20 @@ sql_data_copy <- function(value, conn, row.names = FALSE) {
 
   value <- fix_posixt(value, conn@timezone)
 
-  value[is_difftime] <- lapply(value[is_difftime], function(col) format_keep_na(hms::as_hms(col)))
+  value[is_difftime] <- lapply(value[is_difftime], function(col) {
+    format_keep_na(hms::as_hms(col))
+  })
   value[is_blob] <- lapply(
     value[is_blob],
     function(col) {
       vapply(
         col,
         function(x) {
-          if (is.null(x)) NA_character_
-          else paste0("\\x", paste(format(x), collapse = ""))
+          if (is.null(x)) {
+            NA_character_
+          } else {
+            paste0("\\x", paste(format(x), collapse = ""))
+          }
         },
         character(1)
       )
@@ -107,8 +106,11 @@ db_append_table <- function(conn, name, value, copy, warn) {
 
     fields <- dbQuoteIdentifier(conn, names(value))
     sql <- paste0(
-      "COPY ", dbQuoteIdentifier(conn, name),
-      " (", paste(fields, collapse = ", "), ")",
+      "COPY ",
+      dbQuoteIdentifier(conn, name),
+      " (",
+      paste(fields, collapse = ", "),
+      ")",
       " FROM STDIN"
     )
     connection_copy_data(conn@ptr, sql, value)
@@ -120,8 +122,12 @@ db_append_table <- function(conn, name, value, copy, warn) {
   nrow(value)
 }
 
-list_tables <- function(conn, where_schema = NULL, where_table = NULL, order_by = NULL) {
-
+list_tables <- function(
+  conn,
+  where_schema = NULL,
+  where_table = NULL,
+  order_by = NULL
+) {
   query <- paste0(
     # information_schema.table docs: https://www.postgresql.org/docs/current/infoschema-tables.html
     "SELECT table_schema, table_name \n",
@@ -140,9 +146,13 @@ list_tables <- function(conn, where_schema = NULL, where_table = NULL, order_by 
     query <- paste0(query, "  AND ", where_schema)
   }
 
-  if (!is.null(where_table)) query <- paste0(query, "  AND ", where_table)
+  if (!is.null(where_table)) {
+    query <- paste0(query, "  AND ", where_table)
+  }
 
-  if (!is.null(order_by)) query <- paste0(query, "ORDER BY ", order_by)
+  if (!is.null(order_by)) {
+    query <- paste0(query, "ORDER BY ", order_by)
+  }
 
   query
 }
@@ -177,7 +187,8 @@ list_fields <- function(conn, id) {
     # either the user provides the schema
     query <- paste0(
       "(SELECT 1 AS nr, ",
-      dbQuoteString(conn, name[["schema"]]), "::varchar",
+      dbQuoteString(conn, name[["schema"]]),
+      "::varchar",
       " AS table_schema) t"
     )
 
@@ -187,8 +198,8 @@ list_fields <- function(conn, id) {
 
     # or we have to look the table up in the schemas on the search path
   } else if (is_redshift) {
-    # A variant of the Postgres version that uses CTEs and generate_series()
-    # instead of generate_subscripts(), the latter is not supported on Redshift
+    # A variant of the Postgres version that uses CTEs and generate_series() instead of generate_subscripts(),
+    # the latter is not supported on Redshift
     query <- paste0(
       "(WITH ",
       " n_schemas AS (",
@@ -204,8 +215,7 @@ list_fields <- function(conn, id) {
     )
     only_first <- FALSE
   } else {
-    # Get `current_schemas()` in search_path order
-    # so $user and temp tables take precedence over the public schema (by default)
+    # Get `current_schemas()` in search_path order so $user and temp tables take precedence over the public schema (by default)
     # https://www.postgresql.org/docs/current/ddl-schemas.html#DDL-SCHEMAS-PATH
     # https://www.postgresql.org/docs/current/runtime-config-client.html#GUC-SEARCH-PATH
     # How to unnest `current_schemas(true)` array with element number (works since v9.4):
@@ -222,9 +232,11 @@ list_fields <- function(conn, id) {
   # join columns info
   table <- dbQuoteString(conn, name[["table"]])
   query <- paste0(
-    query, " ",
+    query,
+    " ",
     "INNER JOIN INFORMATION_SCHEMA.COLUMNS USING (table_schema) ",
-    "WHERE table_name = ", table
+    "WHERE table_name = ",
+    table
   )
 
   if (only_first) {
@@ -232,14 +244,16 @@ list_fields <- function(conn, id) {
     # https://stackoverflow.com/a/31814584/946850
     query <- paste0(
       "(SELECT *, rank() OVER (ORDER BY nr) AS rnr ",
-      "FROM ", query,
+      "FROM ",
+      query,
       ") tttt WHERE rnr = 1"
     )
   }
 
   query <- paste0(
     "SELECT column_name FROM ",
-    query, " ",
+    query,
+    " ",
     "ORDER BY ordinal_position"
   )
 
@@ -253,8 +267,9 @@ list_fields <- function(conn, id) {
 }
 
 find_temp_schema <- function(conn, fail_if_missing = TRUE) {
-  if (!is.na(connection_get_temp_schema(conn@ptr)))
+  if (!is.na(connection_get_temp_schema(conn@ptr))) {
     return(connection_get_temp_schema(conn@ptr))
+  }
   if (is(conn, "RedshiftConnection")) {
     temp_schema <- dbGetQuery(
       conn,
@@ -270,7 +285,9 @@ find_temp_schema <- function(conn, fail_if_missing = TRUE) {
       return(connection_get_temp_schema(conn@ptr))
     } else {
       # Temporary schema do not exist yet.
-      if (fail_if_missing) stopc("temporary schema does not exist")
+      if (fail_if_missing) {
+        stopc("temporary schema does not exist")
+      }
       return(NULL)
     }
   } else {

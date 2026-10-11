@@ -1,26 +1,338 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
-# RPostgres 1.4.6.9006 (2024-04-02)
+# RPostgres 1.4.10.9020 (2026-10-11)
+
+## Chore
+
+- Auto-update from GitHub Actions (#617).
+
+
+# RPostgres 1.4.10.9019 (2026-09-27)
 
 ## Bug fixes
 
-- `dbWriteTable()` correctly handles name clashes between temporary and permanent tables (#402, #431).
+### ci
 
-- Fix `dbQuoteIdentifier()` for `Id()` objects to no longer rely on names (#460).
+- Restore the custom `before-install` and `after-install` actions (#616).
+
+## Continuous integration
+
+- Run coverage checks after pkgdown push.
+
+## Testing
+
+- Drop the unused astyle helper (#614).
+
+## Uncategorized
+
+- Feat(ci): Render `README.md` and `index.md` in CI (cynkra/cynkratemplate#118).
+
+- Feat(ci): Run R-hub checks on every `cran-*` push, through `rhub-setup` and `rhub-check` actions (cynkra/cynkratemplate#145).
+
+- Feat(ci): Report coverage on pull requests from this repository (cynkra/cynkratemplate#146).
+
+- Ci: Bound every job with `timeout-minutes` (cynkra/cynkratemplate#144).
+
+- Fix(revdep2): Let a slice with no packages check nothing instead of failing (cynkra/cynkratemplate#150).
+
+- Feat: Build a binary package in every check job and share it as an artifact (cynkra/cynkratemplate#141).
+
+- Fix(ci): Collect the fleet's workflow fixes after the move to central actions (cynkra/cynkratemplate#139).
+
+
+# RPostgres 1.4.10.9018 (2026-09-15)
+
+## Documentation
+
+- Break lines at meaning boundaries (#606).
+
+- Point the coverage badge at the branch that exists (#599, #605).
+
+- Use `pak::pak()` for the development install (#602).
+
+
+# RPostgres 1.4.10.9017 (2026-09-13)
+
+## Chore
+
+- Remove Copilot setup steps.
+
+- Record the v1.4.8 tag on the mainline (#604).
+
+## Uncategorized
+
+- Refactor(ci): Serve the actions from this repository instead of copying them (cynkra/cynkratemplate#121).
+
+- Refactor(ci): Move every script out of the workflows and into a named action (cynkra/cynkratemplate#120).
+
+- Refactor(ci): Make an action of what the workflows say more than once.
+
+- Refactor(ci): Move every script that could change out of the workflows.
+
+- Refactor(ci): Extract the last three scripts, which only a named action can hold.
+
+- Fix(fledge): Push the bump to the default branch wherever that is allowed (cynkra/cynkratemplate#117).
+
+- Fix(ci): Make a failing `rcc` run say what failed, and link to it (cynkra/cynkratemplate#115).
+
+- Fix(ci): Exempt deprecation warnings from the roxygenize warning gate (cynkra/cynkratemplate#114).
+
+
+# RPostgres 1.4.10.9016 (2026-09-13)
+
+## Bug fixes
+
+### ci
+
+- Drop the ARM64 Windows entry, which has no PostgreSQL server (#601).
+
+## Features
+
+### ci
+
+- Align the `revdep2`, `revdep4` and `revdepx` subsystems with `rigraph`.
+
+## Uncategorized
+
+- Perf(revdepx): Compile the revdeps' checks through ccache.
+
+
+# RPostgres 1.4.10.9015 (2026-09-05)
+
+## Bug fixes
+
+### ci
+
+- Backport kit fixes from `rigraph`, `duckdb-r` and `dm`.
+
+
+# RPostgres 1.4.10.9014 (2026-08-08)
+
+## Continuous integration
+
+- Wrap the commit status update into an action.
+
+- Route ccache through one-word compiler wrappers on Unix.
+
+- Name every step and restore the log entry `setup-pandoc` swallows.
+
+
+# RPostgres 1.4.10.9013 (2026-08-06)
+
+## Continuous integration
+
+- Add sharded `revdep2` workflow.
+
+## Uncategorized
+
+- Ci: Harden `workflow_run` workflows against untrusted pull requests (#106).
+
+- Ci: Pin third-party actions to commits and let Renovate keep them pinned (#105).
+
+
+# RPostgres 1.4.10.9012 (2026-08-05)
+
+## Chore
+
+- Auto-update from GitHub Actions (#595).
+
+## Continuous integration
+
+- Remove unused pr-commands workflow.
+
+## Uncategorized
+
+- Ci: Give every workflow and job an explicit `permissions` block (#103).
+
+- Ci: Pass workflow context through the environment, not into script text (#102).
+
+- Ci: Add a Windows arm64 (`windows-11-arm`) check on R-release (#99).
+
+
+# RPostgres 1.4.10.9011 (2026-07-28)
+
+## Bug fixes
+
+### ci
+
+- Emit empty package matrix when there are no (rev)deps.
+
+## Continuous integration
+
+- Remove stale workflow.
+
+- Install `tzdata-legacy` on Ubuntu 26.04 (#593).
+
+- Lock down `format-suggest` egress (audit → block).
+
+- Run on Ubuntu 26.04.
+
+- Align workflows with template.
+
+## Uncategorized
+
+- Ci: Apply matrix `env` vars in the workflow, not in custom actions (#95).
+
+- Ci: Link the responsible workflow run in snapshot update PRs (#96).
+
+- Ci: Harden `format-suggest` against `pull_request_target` pwn requests (#93).
+
+
+# RPostgres 1.4.10.9010 (2026-06-21)
+
+## Chore
+
+- Auto-update from GitHub Actions (#582).
+
+
+# RPostgres 1.4.10.9009 (2026-05-24)
+
+## Continuous integration
+
+- Update ccache-action reference.
+
+- Bump action version.
+
+
+# RPostgres 1.4.10.9008 (2026-05-16)
+
+- Ci: Unify fledge.yaml across cynkratemplate and fledge (#86).
+
+
+# RPostgres 1.4.10.9007 (2026-05-13)
+
+## Chore
+
+- Add ccache to `.gitignore` and `.Rbuildignore`.
+
+## Continuous integration
+
+- Create snapshot update PR against correct branch.
+
+- Add reference to `/apply-patch` workflow in commit message.
+
+- Clarify rationale for not deploying on schedule.
+
+- Only run fledge on pushes to main.
+
+- Tweak fledge workflow and ccache action.
+
+
+# RPostgres 1.4.10.9006 (2026-05-06)
+
+## Continuous integration
+
+- Cosmetics.
+
+- Bump action versions.
+
+- Align fledge workflow.
+
+- Harmonize.
+
+
+# RPostgres 1.4.10.9005 (2026-05-05)
+
+## Chore
+
+- Auto-update from GitHub Actions (#565).
+
+
+# RPostgres 1.4.10.9004 (2026-03-22)
+
+## Chore
+
+- Auto-update from GitHub Actions (#562).
+
+
+# RPostgres 1.4.10.9003 (2026-03-14)
+
+## Chore
+
+- Auto-update from GitHub Actions (#560).
+
+
+# RPostgres 1.4.10.9002 (2026-03-13)
+
+## Chore
+
+- Auto-update from GitHub Actions (#558).
+
+- Auto-update from GitHub Actions (#556).
+
+
+# RPostgres 1.4.10.9001 (2026-03-08)
+
+## Chore
+
+- Auto-update from GitHub Actions (#554).
+
+
+# RPostgres 1.4.10.9000 (2026-02-16)
+
+- Merge tag 'v1.4.9'.
+
+- New `postgresExportLargeObject()` function for exporting large objects to files (#519, #520).
+
+- Remove plogr (#545).
+
+- Format C++ code with clang-format.
+
+- Add comprehensive GitHub Copilot instructions (#522).
+
+
+# RPostgres 1.4.10 (2026-02-15)
+
+## Bug fixes
+
+- Fix compilation on Alpine Linux and other variants.
+
+
+# RPostgres 1.4.9 (2026-02-05)
+
+## Features
+
+- New `postgresExportLargeObject()` function for exporting large objects to files (#519, #520).
+
+## Chore
+
+- Remove plogr (#545).
+
+- Format C++ code with clang-format.
+
+## Documentation
+
+- Add comprehensive GitHub Copilot instructions (#522).
+
+
+# RPostgres 1.4.8 (2025-02-25)
+
+## Windows
+
+- Use libpq from Rtools if available (#486), update libpq fallback library (#489).
+
+## Features
+
+- New `postgresImportLargeObject()` for importing large objects from client side (@toppyy, #376, #472).
+
+
+# RPostgres 1.4.7 (2024-05-26)
 
 ## Features
 
 - Breaking change: Avoid appending a numeric suffix to duplicate column names (#463).
 
+## Bug fixes
+
+- `dbWriteTable()` correctly handles name clashes between temporary and permanent tables (#402, #431).
+- Fix `dbQuoteIdentifier()` for `Id()` objects to no longer rely on names (#460).
+
 ## Chore
 
+- Bump preferred libpq version on MacOS to 15 (#441, #465).
 - Refactor `dbListTables()` et al. (@dpprdan, #413).
-
 - Refactor `list_fields()` (#462).
-
 - Use `Id` in `exists_table()` (#461).
-
-- Add Aviator configuration.
 
 ## Documentation
 
@@ -29,68 +341,7 @@
 ## Testing
 
 - Test for columns in `dbQuoteIdentifier()` (@dpprdan, #263, #372).
-
-## Breaking changes
-
-- Breaking change: Avoid appending a numeric suffix to duplicate column names (#463).
-
-
-# RPostgres 1.4.6.9005 (2024-01-24)
-
-- Internal changes only.
-
-
-# RPostgres 1.4.6.9004 (2024-01-15)
-
-- Internal changes only.
-
-
-# RPostgres 1.4.6.9003 (2023-12-21)
-
-## Chore
-
-- Define build-time dependencies.
-
-- Use cache-from to control ghcr cache.
-
-- Improve ghcr workflow.
-
-- Fix docker-compose file.
-
-- Fix typo in `configure`.
-
-- Add Docker setup.
-
-## Documentation
-
-- Typo r-lib -\> r-dbi (@dpprdan, #454).
-
-
-# RPostgres 1.4.6.9002 (2023-11-09)
-
-## Chore
-
-- Fix warning on Windows (#449).
-
-- Add Aviator configuration.
-
-## Documentation
-
-- No more Rcpp in DESCRIPTION (#446).
-
-## Testing
-
 - Fix tests if DBItest is not installed (#448).
-
-
-# RPostgres 1.4.6.9001 (2023-10-28)
-
-- Merge branch 'cran-1.4.6'.
-
-
-# RPostgres 1.4.6.9000 (2023-10-27)
-
-- Merge branch 'cran-1.4.6'.
 
 
 # RPostgres 1.4.6 (2023-10-22)
@@ -192,7 +443,7 @@
 
 ## Bug fixes
 
-- Avoid crash by dereferencing 0-size vector (#343). 
+- Avoid crash by dereferencing 0-size vector (#343).
 
 
 # RPostgres 1.4.0 (2021-09-25)
@@ -215,7 +466,7 @@
 
 - Skip timestamp tests on i386 (#318).
 - `dbSendQuery()` and `dbQuoteLiteral()` use single dispatch (#320).
-- `dbWriteTable()` and `dbAppendTable()` default to `copy = NULL`, this translates to `TRUE` for `Postgres()` and `FALSE` for `Redshift()` connections (#329). 
+- `dbWriteTable()` and `dbAppendTable()` default to `copy = NULL`, this translates to `TRUE` for `Postgres()` and `FALSE` for `Redshift()` connections (#329).
 
 ## Documentation
 

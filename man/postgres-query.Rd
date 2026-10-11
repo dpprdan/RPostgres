@@ -27,18 +27,16 @@
 \S4method{dbSendQuery}{PqConnection}(conn, statement, params = NULL, ..., immediate = FALSE)
 }
 \arguments{
-\item{res}{Code a \linkS4class{PqResult} produced by
-\code{\link[DBI:dbSendQuery]{DBI::dbSendQuery()}}.}
+\item{res}{Code a \link[=PqResult-class]{PqResult} produced by \code{\link[DBI:dbSendQuery]{DBI::dbSendQuery()}}.}
 
-\item{params}{A list of query parameters to be substituted into
-a parameterised query. Query parameters are sent as strings, and the
-correct type is imputed by PostgreSQL. If this fails, you can manually
-cast the parameter with e.g. \code{"$1::bigint"}.}
+\item{params}{A list of query parameters to be substituted into a parameterised query.
+Query parameters are sent as strings, and the correct type is imputed by PostgreSQL.
+If this fails, you can manually cast the parameter with e.g. \code{"$1::bigint"}.}
 
-\item{...}{Other arguments needed for compatibility with generic (currently
-ignored).}
+\item{...}{Other arguments needed for compatibility with generic (currently ignored).}
 
-\item{n}{Number of rows to return. If less than zero returns all rows.}
+\item{n}{Number of rows to return.
+If less than zero returns all rows.}
 
 \item{row.names}{Either \code{TRUE}, \code{FALSE}, \code{NA} or a string.
 
@@ -51,7 +49,7 @@ default name.
 
 For backward compatibility, \code{NULL} is equivalent to \code{FALSE}.}
 
-\item{conn}{A \linkS4class{PqConnection} created by \code{\link[=dbConnect]{dbConnect()}}.}
+\item{conn}{A \link[=PqConnection-class]{PqConnection} created by \code{\link[DBI:dbConnect]{dbConnect()}}.}
 
 \item{statement}{An SQL string to execute.}
 
@@ -60,23 +58,20 @@ This allows to pass multiple statements and turns off the ability to pass parame
 }
 \description{
 To retrieve results a chunk at a time, use \code{dbSendQuery()},
-\code{dbFetch()}, then \code{dbClearResult()}. Alternatively, if you want all the
-results (and they'll fit in memory) use \code{dbGetQuery()} which sends,
+\code{dbFetch()}, then \code{dbClearResult()}.
+Alternatively, if you want all the results (and they'll fit in memory) use \code{dbGetQuery()} which sends,
 fetches and clears for you.
 }
 \section{Multiple queries and statements}{
 
-With \code{immediate = TRUE}, it is possible to pass multiple queries or statements,
-separated by semicolons.
-For multiple statements, the resulting value of \code{\link[=dbGetRowsAffected]{dbGetRowsAffected()}}
-corresponds to the total number of affected rows.
-If multiple queries are used, all queries must return data with the same
-column names and types.
+With \code{immediate = TRUE}, it is possible to pass multiple queries or statements, separated by semicolons.
+For multiple statements, the resulting value of \code{\link[DBI:dbGetRowsAffected]{dbGetRowsAffected()}} corresponds to the total number of affected rows.
+If multiple queries are used, all queries must return data with the same column names and types.
 Queries and statements can be mixed.
 }
 
 \examples{
-\dontshow{if (postgresHasDefault()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (postgresHasDefault()) withAutoprint(\{ # examplesIf}
 library(DBI)
 db <- dbConnect(RPostgres::Postgres())
 dbWriteTable(db, "usarrests", datasets::USArrests, temporary = TRUE)

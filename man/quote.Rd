@@ -38,19 +38,17 @@
 \S4method{dbUnquoteIdentifier}{PqConnection,SQL}(conn, x, ...)
 }
 \arguments{
-\item{conn}{A \linkS4class{PqConnection} created by \code{dbConnect()}}
+\item{conn}{A \link[=PqConnection-class]{PqConnection} created by \code{dbConnect()}}
 
 \item{x}{A character vector to be quoted.}
 
-\item{...}{Other arguments needed for compatibility with generic (currently
-ignored).}
+\item{...}{Other arguments needed for compatibility with generic (currently ignored).}
 }
 \description{
-If an object of class \link{Id} is used for \code{dbQuoteIdentifier()}, it needs
-at most one \code{table} component and at most one \code{schema} component.
+If an object of class \link{Id} is used for \code{dbQuoteIdentifier()}, it needs at most one \code{table} component and at most one \code{schema} component.
 }
 \examples{
-\dontshow{if (postgresHasDefault()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (postgresHasDefault()) withAutoprint(\{ # examplesIf}
 library(DBI)
 con <- dbConnect(RPostgres::Postgres())
 

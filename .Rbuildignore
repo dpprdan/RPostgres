@@ -25,9 +25,10 @@
 ^\.gitpod\.yml$
 ^\.gitpod\.Dockerfile$
 ^CMakeLists\.txt$
-^vscode-install\.r$
 ^vscode-.*build$
-^\.aviator/config\.yml$
 ^windows$
 ^Dockerfile$
 ^docker-compose\.yml$
+^air\.toml$
+^\.clang-format$
+^\.ccache$

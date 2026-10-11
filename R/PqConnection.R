@@ -5,7 +5,8 @@ NULL
 #'
 #' @keywords internal
 #' @export
-setClass("PqConnection",
+setClass(
+  "PqConnection",
   contains = "DBIConnection",
   slots = list(
     ptr = "externalptr",
@@ -38,12 +39,23 @@ format.PqConnection <- function(x, ...) {
 }
 
 get_data_type <- function(obj) {
-  if (is.factor(obj)) return("TEXT")
-  if (inherits(obj, "POSIXt")) return("TIMESTAMPTZ")
-  if (inherits(obj, "Date")) return("DATE")
-  if (inherits(obj, "difftime")) return("TIME")
-  if (inherits(obj, "integer64")) return("BIGINT")
-  switch(typeof(obj),
+  if (is.factor(obj)) {
+    return("TEXT")
+  }
+  if (inherits(obj, "POSIXt")) {
+    return("TIMESTAMPTZ")
+  }
+  if (inherits(obj, "Date")) {
+    return("DATE")
+  }
+  if (inherits(obj, "difftime")) {
+    return("TIME")
+  }
+  if (inherits(obj, "integer64")) {
+    return("BIGINT")
+  }
+  switch(
+    typeof(obj),
     integer = "INTEGER",
     double = "DOUBLE PRECISION",
     character = "TEXT",
@@ -64,9 +76,13 @@ check_tz <- function(timezone) {
     },
     error = function(e) {
       warning(
-        "Invalid time zone '", timezone, "', ",
+        "Invalid time zone '",
+        timezone,
+        "', ",
         "falling back to local time.\n",
-        "Set the `", arg_name, "` argument to a valid time zone.\n",
+        "Set the `",
+        arg_name,
+        "` argument to a valid time zone.\n",
         conditionMessage(e),
         call. = FALSE
       )
@@ -77,13 +93,12 @@ check_tz <- function(timezone) {
 
 #' Wait for and return any notifications that return within timeout
 #'
-#' Once you subscribe to notifications with LISTEN, use this to wait for
-#' responses on each channel.
+#' Once you subscribe to notifications with LISTEN, use this to wait for responses on each channel.
 #'
 #' @export
-#' @param conn a [PqConnection-class] object, produced by
-#'   [DBI::dbConnect()]
-#' @param timeout How long to wait, in seconds. Default 1
+#' @param conn a [PqConnection-class] object, produced by [DBI::dbConnect()]
+#' @param timeout How long to wait, in seconds.
+#'   Default 1
 #' @return If a notification was available, a list of:
 #' \describe{
 #'   \item{channel}{Name of channel}
@@ -125,13 +140,96 @@ postgresWaitForNotify <- function(conn, timeout = 1) {
 
 #' Return whether a transaction is ongoing
 #'
-#' Detect whether the transaction is active for the given connection. A
-#' transaction might be started with [dbBegin()] or wrapped within
-#' [DBI::dbWithTransaction()].
+#' Detect whether the transaction is active for the given connection.
+#' A transaction might be started with [dbBegin()] or wrapped within [DBI::dbWithTransaction()].
 #' @export
-#' @param conn a [PqConnection-class] object, produced by
-#'   [DBI::dbConnect()]
+#' @param conn a [PqConnection-class] object, produced by [DBI::dbConnect()]
 #' @return A boolean, indicating if a transaction is ongoing.
 postgresIsTransacting <- function(conn) {
   connection_is_transacting(conn@ptr)
+}
+
+
+#' Imports a large object from file
+#'
+#' Returns an object identifier (Oid) for the imported large object.
+#' This function must be called within a transaction.
+#'
+#' @export
+#' @param conn a [PqConnection-class] object, produced by [DBI::dbConnect()]
+#' @param filepath a path to the large object to import
+#' @param oid the oid to write to.
+#'   Defaults to 0 which assigns an unused oid
+#' @return the identifier of the large object, an integer
+#' @examples
+#' \dontrun{
+#' con <- postgresDefault()
+#' filepath <- 'your_image.png'
+#' dbWithTransaction(con, {
+#'   oid <- postgresImportLargeObject(con, filepath)
+#' })
+#' }
+postgresImportLargeObject <- function(conn, filepath = NULL, oid = 0) {
+  if (!postgresIsTransacting(conn)) {
+    stopc("Cannot import a large object outside of a transaction")
+  }
+
+  if (is.null(filepath)) {
+    stopc("'filepath' cannot be NULL")
+  }
+  if (is.null(oid)) {
+    stopc("'oid' cannot be NULL")
+  }
+  if (is.na(oid)) {
+    stopc("'oid' cannot be NA")
+  }
+  if (oid < 0) {
+    stopc("'oid' cannot be negative")
+  }
+
+  connection_import_lo_from_file(conn@ptr, filepath, oid)
+}
+
+#' Exports a large object to file
+#'
+#' Exports a large object from the database to a file on disk.
+#' This function uses PostgreSQL's `lo_export()` function
+#' which efficiently streams the data directly to disk without loading it into memory,
+#' making it suitable for very large objects (GB+) that would cause memory issues with `lo_get()`.
+#' This function must be called within a transaction.
+#'
+#' @export
+#' @param conn a [PqConnection-class] object, produced by [DBI::dbConnect()]
+#' @param oid the object identifier (Oid) of the large object to export
+#' @param filepath a path where the large object should be exported
+#' @return invisible NULL on success, or stops with an error
+#' @examples
+#' \dontrun{
+#' con <- postgresDefault()
+#' filepath <- 'your_image.png'
+#' dbWithTransaction(con, {
+#'   oid <- postgresImportLargeObject(con, filepath)
+#' })
+#' # Later, export the large object back to a file
+#' dbWithTransaction(con, {
+#'   postgresExportLargeObject(con, oid, 'exported_image.png')
+#' })
+#' }
+postgresExportLargeObject <- function(conn, oid, filepath) {
+  if (!postgresIsTransacting(conn)) {
+    stopc("Cannot export a large object outside of a transaction")
+  }
+
+  if (is.null(oid)) {
+    stopc("'oid' cannot be NULL")
+  }
+  if (is.na(oid)) {
+    stopc("'oid' cannot be NA")
+  }
+  if (oid < 0) {
+    stopc("'oid' cannot be negative")
+  }
+
+  connection_export_lo_to_file(conn@ptr, oid, filepath)
+  invisible()
 }
